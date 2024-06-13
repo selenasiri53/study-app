@@ -1,5 +1,14 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+# from django.http import HttpResponse
 
 def index(request):
-    return HttpResponse('Home Page')
+    return render(request, 'index.html')
+
+def room(request):
+    return render(request, 'room.html')
+
+# def index(request):
+#     return HttpResponse('Home Page')
+
+# def room(request):
+#     return HttpResponse('Room')
