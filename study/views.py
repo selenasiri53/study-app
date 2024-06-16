@@ -1,20 +1,22 @@
 from django.shortcuts import render
-# from django.http import HttpResponse
+from django.http import HttpRequest
+# from django.http import HttpResponse -- original
 
 rooms = [
     {'id': 1, 'name': "Let's learn python!"},
     {'id': 2, 'name': "Design with me"},
-    {'id': 3, 'name': "Frontend development"},
+    {'id': 3, 'name': "Frontend development"}
 ]
 
 def index(request):
-    return render(request, 'base/index.html', {'rooms': rooms})
+    context = {'rooms': rooms}
+    return render(request, 'base/index.html', context)
 
-def room(request):
-    return render(request, 'base/room.html')
+def room(request, pk):
+    room = None
+    for i in rooms:
+        if i['id'] == int(pk):
+            room = i
+    context = {'room': room}
 
-# def index(request):
-#     return HttpResponse('Home Page')
-
-# def room(request):
-#     return HttpResponse('Room')
+    return render(request, 'base/room.html', context)
