@@ -1,7 +1,7 @@
-from django.shortcuts import render
-from django.http import HttpRequest
+from django.shortcuts import render, redirect
 from .models import Room
-# from django.http import HttpResponse -- original
+from .forms import RoomForm
+
 
 # rooms = [
 #     {'id': 1, 'name': "Let's learn python!"},
@@ -19,3 +19,14 @@ def room(request, pk):
     context = {'room': room}
 
     return render(request, 'base/room.html', context)
+
+def createRoom(request):
+    form = RoomForm
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home') # just list the name, not url path
+
+    context = {'form': form}
+    return render (request, 'base/room_form.html', context)
