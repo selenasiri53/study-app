@@ -22,8 +22,9 @@ def index(request):
     # can also add a case sensitive filter
 
     topics = Topic.objects.all()
+    room_count = rooms.count()
 
-    context = {'rooms': rooms, 'topics': topics}
+    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count}
     return render(request, 'base/index.html', context)
 
 def room(request, pk):
