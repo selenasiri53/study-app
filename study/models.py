@@ -19,6 +19,11 @@ class Room(models.Model):
     created = models.DateTimeField(auto_now_add=True)
         #auto_now_add - only timestamps when we 1st save this instance, not each update
 
+    class Meta:
+        ordering = ['-updated', '-created']
+        # '-' puts the newest item first
+        # rm the '-' to put the newest last
+
     def __str__(self):
         return str(self.name)
     
