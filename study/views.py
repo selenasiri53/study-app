@@ -1,14 +1,20 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.http import HttpResponse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required 
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
 from .models import Room, Topic
 from .forms import RoomForm
 
 def loginPage(request):
+    page = 'login'
+
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -26,12 +32,28 @@ def loginPage(request):
         else:
             messages.error(request, 'Username or password does not exist.')
 
-    context={}
+    context={'page': page}
     return render(request, 'base/login_register.html', context)
 
 def logoutPage(request):
     logout(request)
     return redirect('home')
+
+def registerPage(request):
+    page = 'register'
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False) # access the user immediately
+            user.username = user.username.lower() # get username, make sure it's lowercase to match
+            user.save() # save
+            login(request, user) # login, 
+            return redirect('home') # send to homepage
+        else: 
+            messages.error(request, 'An error occurred during registration')
+
+    return render(request, 'base/login_register.html')
 
 
 def index(request):
@@ -76,7 +98,7 @@ def updateRoom(request, pk):
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
 
-    if request.user != room.host:
+    if request.user is not room.host:
         return HttpResponse('You are not allowed here')
 
     if request.method == 'POST':
