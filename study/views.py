@@ -70,8 +70,9 @@ def index(request):
 
     topics = Topic.objects.all()
     room_count = rooms.count() # faster than the python .len() method
+    room_messages = Message.objects.all(Q(room__name__icontains=q))
 
-    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count}
+    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count, 'room_messages': room_messages}
     return render(request, 'base/index.html', context)
 
 def room(request, pk):
