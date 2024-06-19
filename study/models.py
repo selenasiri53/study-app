@@ -13,11 +13,9 @@ class Room(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
-    # participants = // all users active in a room
-    updated = models.DateTimeField(auto_now=True)
-        #timestamps everytime the save method is called
-    created = models.DateTimeField(auto_now_add=True)
-        #auto_now_add - only timestamps when we 1st save this instance, not each update
+    participants = models.ManyToManyField(User, related_name='participants', blank=True)
+    updated = models.DateTimeField(auto_now=True) # each update
+    created = models.DateTimeField(auto_now_add=True) # one time date
 
     class Meta:
         ordering = ['-updated', '-created']
@@ -32,7 +30,7 @@ class Message(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     body = models.TextField()
     updated = models.DateTimeField(auto_now=True)
-    create = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.body[0:50]
